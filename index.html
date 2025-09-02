@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Win Draw Lotto</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login/Registration Section -->
+        <div id="auth-section" class="section">
+            <div class="auth-card">
+                <h2>Welcome to Fast Win Lotto!</h2>
+                <div id="login-form">
+                    <h3>Login</h3>
+                    <input type="text" id="login-account-no" placeholder="Account Number (11 digits)" maxlength="11" pattern="\d{11}" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <button onclick="loginUser()">Login</button>
+                    <p>Don't have an account? <a href="#" onclick="showRegisterForm()">Register here</a></p>
+                </div>
+
+                <div id="register-form" style="display: none;">
+                    <h3>Register</h3>
+                    <input type="text" id="register-username" placeholder="Full Name" required>
+                    <input type="email" id="register-email" placeholder="Email" required>
+                    <input type="password" id="register-password" placeholder="Password" required>
+                    <input type="password" id="register-confirm-password" placeholder="Confirm Password" required>
+                    <button onclick="registerUser()">Register</button>
+                    <p>Already have an account? <a href="#" onclick="showLoginForm()">Login here</a></p>
+                </div>
+                <div id="auth-message" class="message"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+         <div><h1>Fast Win Draw</h1></div>
+        <div id="dashboard-section" class="section" style="display: none;">
+            <div class="header">
+                <div class="user-info">
+                    <span id="welcome-message"></span>
+                    <p>Account No: <span id="dashboard-account-no"></span> | Balance: <span id="dashboard-balance">0.00</span> NGN</p>
+                </div>
+                <div class="header-actions">
+                    <button onclick="showWithdrawForm()">Withdraw</button>
+                    <button onclick="logoutUser()">Logout</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Lotto Board -->
+                <div class="lotto-board card">
+                    <h3>Select Your Numbers (6 from 1-99)</h3>
+                    <div id="number-grid" class="number-grid">
+                        <!-- Numbers will be generated here by JS -->
+                    </div>
+                    <div class="lotto-actions">
+                        <button onclick="quickPick()">Quick Pick</button>
+                        <button onclick="clearSelection()">Clear Selection</button>
+                    </div>
+                    <p>Selected Numbers: <span id="selected-numbers">None</span></p>
+                    <div class="betting-area">
+                        <label for="stake-amount">Stake (NGN):</label>
+                        <input type="number" id="stake-amount" value="100" min="50" step="50">
+                        <button onclick="placeBet()" id="place-bet-btn">Place Bet</button>
+                    </div>
+                    <div id="lotto-message" class="message"></div>
+                </div>
+
+                <!-- Right Sidebar: Draw Info & History -->
+                <div class="sidebar card">
+                    <h3>Next Draw</h3>
+                    <p id="draw-status">Draw not started.</p>
+                    <p>Time Remaining: <span id="countdown-timer">00:00</span></p>
+                    <button id="start-draw-btn" onclick="startDraw()">Start Draw</button>
+
+                    <h3>Last Draw Results</h3>
+                    <p id="last-draw-numbers">No previous draw.</p>
+                    <p id="user-last-result"></p>
+
+                    <h3>Draw History</h3>
+                    <ul id="draw-history-list">
+                        <!-- History items will be added here by JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Wallet & Transactions (simplified) -->
+            <div class="wallet-section card">
+                <h3>My Bets</h3>
+                <div id="user-bets-list">
+                    <!-- User's placed bets will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Withdrawal Section -->
+        <div id="withdraw-section" class="section" style="display: none;">
+            <div class="auth-card">
+                <h2>Withdraw Funds</h2>
+                <p>Current Balance: <span id="withdraw-balance">0.00</span> NGN</p>
+                <p id="withdraw-min-message"></p>
+                <input type="number" id="withdraw-amount" placeholder="Amount (NGN)" min="20000" required>
+                <input type="text" id="bank-name" placeholder="Bank Name" required>
+                <input type="text" id="account-name" placeholder="Account Name" required>
+                <input type="text" id="account-number" placeholder="Bank Account Number" required>
+                <button onclick="submitWithdrawal()">Submit Withdrawal</button>
+                <button onclick="hideWithdrawForm()">Cancel</button>
+                <div id="withdraw-message" class="message"></div>
+            </div>
+        </div>
+
+        <!-- Admin Credit Panel (simulated) -->
+        <div id="admin-credit-section" class="section" style="display: none;">
+             <div class="auth-card">
+                <h2><button>Admin Credit User</button></h2>
+                <input type="password" id="admin-pin" placeholder="Admin PIN (4 digits)" maxlength="4" required>
+                <button onclick="verifyAdminPin()">Verify PIN</button>
+
+                <div id="admin-credit-form" style="display: none;">
+                    <input type="text" id="credit-account-no" placeholder="User Account Number (11 digits)" maxlength="11" pattern="\d{11}" required>
+                    <input type="number" id="credit-amount" placeholder="Amount to Credit (NGN)" min="1" required>
+                    <button onclick="creditUserAccount()">Credit User</button>
+                    <button onclick="hideAdminCreditForm()">Cancel</button>
+                </div>
+                <div id="admin-message" class="message"></div>
+             </div>
+        </div>
+
+        <!-- Welcome Pop-up -->
+        <div id="welcome-popup" class="popup" style="display: none;">
+            <div class="popup-content">
+                <h2>Welcome to Fast Win Draw Lotto!</h2>
+                <p>Select 6 numbers from 1-99, choose your stake, and place your bet. A new draw starts every 10 minutes (after you click "Start Draw"). Match numbers to win exciting prizes! Good luck!</p>
+                <button onclick="hideWelcomePopup()">Got It!</button>
+            </div>
+        </div>
+
+        <!-- Notifications Pop-up -->
+        <div id="notification-popup" class="popup" style="display: none;">
+            <div class="popup-content">
+                <h3 id="notification-title"></h3>
+                <p id="notification-text"></p>
+                <button onclick="hideNotificationPopup()">Close</button>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <footer>
+            Kindly credit Fat Win Draw account to get your wallet funded.
+            Share your evidence of payment to Watsapp (09068420849)
+            Account Details: Charles-fast win draw
+            Account Number: 9068420849
+            Bank: Palmpay
+            Contact us: Fun Win Draw | 09068420849
+
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
